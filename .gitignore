@@ -259,3 +259,13 @@ paket-files/
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
 *.pyc
+.axoCover/runs/run_2021-11-09_05-18-48/coverageReport.xml
+.axoCover/runs/run_2021-11-09_04-59-36/coverageReport.xml
+.axoCover/runs/run_2021-11-07_17-24-30/coverageReport.xml
+.axoCover/runs/run_2021-11-07_17-25-05/coverageReport.xml
+.axoCover/runs/run_2021-11-09_03-52-51/coverageReport.xml
+.axoCover/runs/run_2021-11-09_04-12-31/coverageReport.xml
+.axoCover/runs/run_2021-11-09_04-12-31/coverageReport.xml
+.axoCover/runs/run_2021-11-09_04-30-47/coverageReport.xml
+.axoCover/runs/run_2021-11-09_04-37-29/coverageReport.xml
+.axoCover/runs/run_2021-11-09_05-00-18/coverageReport.xml
