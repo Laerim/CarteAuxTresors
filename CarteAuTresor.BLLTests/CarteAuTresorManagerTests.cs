@@ -120,9 +120,9 @@ namespace CarteAuTresor.BLL.Tests
 
         }
 
-        
 
-     
+
+
 
         [TestMethod()]
         public void CheckCollisionTest()
@@ -193,9 +193,10 @@ namespace CarteAuTresor.BLL.Tests
             carte.Hauteur = 9;
             carte.Largeur = 9;
             carte.Montagnes.Add(new Montagne { Position = new Position(1, 1) });
-            carte.Tresors.Add(new Tresor { Position = new Position(1, 2), NombreDeTresor=0 });
+            carte.Tresors.Add(new Tresor { Position = new Position(1, 2), NombreDeTresor = 0 });
             carte.Tresors.Add(new Tresor { Position = new Position(1, 3), NombreDeTresor = 1 });
-            carte.Aventuriers.Add(new Aventurier {
+            carte.Aventuriers.Add(new Aventurier
+            {
                 Position = new Position(0, 0),
                 TresorsRamasses = 8,
                 Orientation = 'S',
@@ -224,6 +225,39 @@ namespace CarteAuTresor.BLL.Tests
             Assert.AreEqual(false, check);
         }
 
-      
+        [TestMethod()]
+        [ExpectedException(typeof(Exception), "Il y a plusieurs cartes décrites dans le fichier. Impossible de traiter le fichier.\nErreur à la ligne ")]
+        public void ChargerCarte_Multiple_cartes()
+        {
+            List<string> lines = new List<string>();
+            lines.Add("C - 1 - 1");
+            lines.Add("C - 2 - 2");
+            Carte carte = CarteAuTresorManager.GetInstance.ChargerCarte(lines);
+        }
+        [TestMethod()]
+        [ExpectedException(typeof(Exception), "Il n'y a pas de pas de ligne 'Carte' dans le fichier. Impossible de traiter le fichier.\nErreur à la ligne ")]
+        public void ChargerCarte_No_carte()
+        {
+            List<string> lines = new List<string>();
+            lines.Add("M - 1 - 1");
+            lines.Add("M - 2 - 2");
+            Carte carte = CarteAuTresorManager.GetInstance.ChargerCarte(lines);
+        }
+        [TestMethod()]
+        public void ChargerCarteTest()
+        {
+            List<string> lines = new List<string>();
+            lines.Add("C - 7 - 4");
+            lines.Add("M - 2 - 2");
+            lines.Add("T - 4 - 1 - 2");
+            lines.Add("A - Ana - 1 - 1 - S - AA");
+            Carte carte = CarteAuTresorManager.GetInstance.ChargerCarte(lines);
+            Assert.AreEqual("Ana", carte.Aventuriers[0].Nom);
+            Assert.AreEqual(1, carte.Montagnes.Count);
+            Assert.AreEqual(4, carte.Hauteur);
+            Assert.AreEqual(7, carte.Largeur);
+            Assert.AreEqual(2, carte.Tresors.First().NombreDeTresor);
+
+        }
     }
 }

@@ -48,7 +48,8 @@ namespace CarteAuTresor.GUI
         {
             try
             {
-                carteEntree = instance.ChargerCarte(txtFile.Text.Trim());
+                List<string> linesCarte = instance.ReadFile(txtFile.Text);
+                carteEntree = instance.ChargerCarte(linesCarte);
                 LoadCarte();
 
             }

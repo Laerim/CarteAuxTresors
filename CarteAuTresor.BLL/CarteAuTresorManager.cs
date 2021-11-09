@@ -39,41 +39,63 @@ namespace CarteAuTresor.BLL
         #endregion
 
         #region METHODES
-        public Carte ChargerCarte(string sChemin)
+        public List<string> ReadFile(string sChemin)
         {
-            bool existCarte = false;
-            Carte carte = new Carte();
-            List<Position> positions = new List<Position>();
+            List<string> lines = new List<string>();
             if (File.Exists(sChemin.Trim()))
             {
                 string line;
-                int indLine = 1;
                 using (StreamReader reader = new StreamReader(sChemin.Trim()))
                 {
                     while ((line = reader.ReadLine()) != null)
                     {
+                        lines.Add(line.Trim());
+                    }
+                    reader.Dispose();
+                    reader.Close();
+                }
+                return lines;
+            }
+            else
+                throw new Exception("Aucun fichier n'est disponible à ce lien");
+        }
+        /// <summary>
+        /// Créer un objet "Carte" à partir d'un ensemble de lignes
+        /// </summary>
+        /// <param name="lines"></param>
+        /// <returns></returns>
+        public Carte ChargerCarte(List<string> lines)
+        {
+            Carte carte = new Carte();
+            List<Position> positions = new List<Position>();
+            string lineCarte = lines.Find(l=> l.Substring(0,1)== "C");
+            if (lineCarte != null)
+            {
+                string[] arrayFirstLine = lineCarte.Split('-');
+                int largeur = 0;
+                int hauteur = 0;
+                if (!int.TryParse(arrayFirstLine[1].Trim(), out largeur))
+                    throw new Exception("La largeur de la carte n'est pas un entier numérique. Impossible de traiter le fichier.\nErreur à la ligne ");
+                if (!int.TryParse(arrayFirstLine[2].Trim(), out hauteur))
+                    throw new Exception("La hauteur de la carte n'est pas un entier numérique. Impossible de traiter le fichier.\nErreur à la ligne ");
+                carte.Largeur = largeur;
+                carte.Hauteur = hauteur;
+
+            }
+            else
+                throw new Exception("Il n'y a pas de pas de ligne 'Carte' dans le fichier. Impossible de traiter le fichier.\nErreur à la ligne ");
+            lines.Remove(lineCarte);
+
+            int indLine = 1;
+                
+                    foreach (string line in lines)
+                    {
                         string[] array = line.Split('-');
                         switch (array[0].Trim())
                         {
-                            case "C":
-                                if (existCarte)
-                                    throw new Exception("Fichier incorrect, il y a plusieurs cartes décrites. \nErreur à la ligne " + indLine);
-                                else
-                                {
-                                    existCarte = true;
-                                    int largeur = 0;
-                                    int hauteur = 0;
-                                    if (!int.TryParse(array[1].Trim(), out largeur))
-                                        throw new Exception("La largeur de la carte n'est pas un entier numérique. Impossible de traiter le fichier.\nErreur à la ligne " + indLine);
-                                    if (!int.TryParse(array[2].Trim(), out hauteur))
-                                        throw new Exception("La hauteur de la carte n'est pas un entier numérique. Impossible de traiter le fichier.\nErreur à la ligne " + indLine);
-                                    carte.Largeur = largeur;
-                                    carte.Hauteur = hauteur;
-                                }
-
-                                break;
+                    case "C":
+                        throw new Exception("Il y a plusieurs cartes décrites dans le fichier. Impossible de traiter le fichier.\nErreur à la ligne ");
                             case "M":
-
                                 var montagne = new Montagne();
                                 try
                                 {
@@ -142,15 +164,12 @@ namespace CarteAuTresor.BLL
 
                         }
                         indLine++;
-                    }
-                    reader.Dispose();
-                    reader.Close();
+                    
                 }
                 return carte;
             }
-            else
-                throw new Exception("Aucun fichier n'est disponible à ce lien");
-        }
+           
+        
 
         public Carte Traitement(Carte entree)
         {
